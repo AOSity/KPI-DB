@@ -1,3 +1,5 @@
 # Virtual environment folders
 env
 venv
+
+__pycache__
