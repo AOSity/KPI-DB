@@ -1,9 +1,5 @@
 from tabulate import tabulate
 
-#class View:
-#    def getView(self, data, headers):
-#        return tabulate(data, headers, tablefmt="pretty", maxcolwidths=[50,50,50,50,50])
-    
 class View:
     def show_user(self, data):
         try:
@@ -57,3 +53,15 @@ class View:
 
     def show_message(self, message):
         print(message)
+    
+    def find_input(self, msg):
+        print(msg, end='')
+        return input().strip()
+    
+    def show_found(self, data):
+        try:
+            print(tabulate(data, 
+                           ["UserName", "Age", "Email", "ResumeName", "ResumeLink", "VacancyName", "VacancyCreationDate"]
+                           , tablefmt="pretty", maxcolwidths=[50,50,50,50,50,50,50]))
+        except IndexError:
+            print('Nothing found!')

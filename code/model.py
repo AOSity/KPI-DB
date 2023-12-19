@@ -119,7 +119,7 @@ class Model:
                         INSERT INTO public."Resume" ("Name", "File Link", "OwnerID")
                         SELECT
                             substring(md5(random()::text), 1, 16),
-                            'https://domain.com/files/' ||  substring(md5(random()::text), 1, 8) || '/resume.pdf',
+                            'domain.com/files/' ||  substring(md5(random()::text), 1, 8) || '/resume.pdf',
                             (SELECT "UserID" FROM public."User" ORDER BY random() LIMIT 1 
 	                         OFFSET (random()*generate_series)::int%(SELECT COUNT(*) FROM "User"))
                         FROM generate_series(1, {number});
@@ -136,8 +136,8 @@ class Model:
             c.execute(f'''
                         INSERT INTO public."Vacancy" ("Name", "Description", "Creation Date", "PublisherID")
                         SELECT
-                            SUBSTRING(md5(random()::text), 1, 16),
-                            SUBSTRING(md5(random()::text), 1, 128),
+                            substring(md5(random()::text), 1, 16),
+                            substring(md5(random()::text), 1, 128),
                             'now'::timestamp - random() * ('2023-12-31'::timestamp - '2022-01-01'::timestamp),
                             (SELECT "UserID" FROM public."User" ORDER BY random() LIMIT 1 
                              OFFSET (random()*generate_series)::int%(SELECT COUNT(*) FROM "User"))
@@ -159,10 +159,50 @@ class Model:
                              OFFSET (random()*generate_series)::int%(SELECT COUNT(*) FROM "Resume")),
                             (SELECT "VacancyID" FROM public."Vacancy" ORDER BY random() LIMIT 1 
                              OFFSET (random()*generate_series)::int%(SELECT COUNT(*) FROM "Vacancy"))
-                        FROM generate_series(1, {number});
+                        FROM generate_series(1, {number})
+                        ON CONFLICT ("ResumeID", "VacancyID") DO NOTHING;
                         ''')
             self.conn.commit()
         except psycopg2.errors.DivisionByZero:
             self.conn.rollback()
             return "Generation failed, no avaliable ResumeID and/or VacancyID"
         return f"{number} Resume/Vacancy relation generated successfully!"
+    
+    def find(self, user_name, min_age, max_age, resume_name, vacancy_name, min_creation_date, max_creation_date):
+        try:
+            query = ('''
+                     SELECT "User"."Name" AS "UserName",
+                            "User"."Age",
+                            "User"."Email",
+                            "Resume"."Name" AS "ResumeName",
+                            "Resume"."File Link" AS "ResumeLink",
+                            "Vacancy"."Name" AS "VacancyName",
+                            "Vacancy"."Creation Date" AS "VacancyCreationDate"
+                     FROM "User"
+                     JOIN "Resume" ON "User"."UserID" = "Resume"."OwnerID"
+                     JOIN "Resume / Vacancy" ON "Resume"."ResumeID" = "Resume / Vacancy"."ResumeID"
+                     JOIN "Vacancy" ON "Resume / Vacancy"."VacancyID" = "Vacancy"."VacancyID"
+                     WHERE TRUE
+                     ''')
+
+            if user_name:
+                query += f' AND "User"."Name" LIKE \'{"%" + user_name + "%"}\''
+            if min_age:
+                query += f' AND "User"."Age" >= {min_age}'
+            if max_age:
+                query += f' AND "User"."Age" <= {max_age}'
+            if resume_name:
+                query += f' AND "Resume"."Name" LIKE \'{"%" + resume_name + "%"}\''
+            if vacancy_name:
+                query += f' AND "Vacancy"."Name" LIKE \'{"%" + vacancy_name + "%"}\''
+            if min_creation_date:
+                query += f' AND "Vacancy"."Creation Date" >= {min_creation_date}'
+            if max_creation_date:
+                query += f' AND "Vacancy"."Creation Date" <= {max_creation_date}'
+
+            c = self.conn.cursor()
+            c.execute(query)
+            return c.fetchall()
+        except Exception:
+            self.conn.rollback()
+            return

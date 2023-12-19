@@ -20,6 +20,8 @@ class Controller:
             elif choice == '5':
                 self.generate()
             elif choice == '6':
+                self.find()
+            elif choice == '7':
                 break
 
     def show_menu(self):
@@ -29,7 +31,8 @@ class Controller:
         self.view.show_message("3. Update")
         self.view.show_message("4. Delete")
         self.view.show_message("5. Generate")
-        self.view.show_message("6. Quit")
+        self.view.show_message("6. Find")
+        self.view.show_message("7. Quit")
         return input("Enter your choice: ")
 
     def add(self):
@@ -146,3 +149,13 @@ class Controller:
         elif choice == '5':
             return
         return
+
+    def find(self):
+        user_name = self.view.find_input("Enter user name (blank for any): ")
+        min_age = self.view.find_input("Enter minimum age (blank for any): ")
+        max_age = self.view.find_input("Enter maximum age (blank for any): ")
+        resume_name = self.view.find_input("Enter resume name (blank for any): ")
+        vacancy_name = self.view.find_input("Enter vacancy name (blank for any): ")
+        min_creation_date = self.view.find_input("Enter minimum creation date (YYYY-MM-DD, blank for any): ")
+        max_creation_date = self.view.find_input("Enter maximum creation date (YYYY-MM-DD, blank for any): ")
+        self.view.show_found(self.model.find(user_name, min_age, max_age, resume_name, vacancy_name, min_creation_date, max_creation_date))
