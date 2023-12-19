@@ -158,4 +158,7 @@ class Controller:
         vacancy_name = self.view.find_input("Enter vacancy name (blank for any): ")
         min_creation_date = self.view.find_input("Enter minimum creation date (YYYY-MM-DD, blank for any): ")
         max_creation_date = self.view.find_input("Enter maximum creation date (YYYY-MM-DD, blank for any): ")
-        self.view.show_found(self.model.find(user_name, min_age, max_age, resume_name, vacancy_name, min_creation_date, max_creation_date))
+        data, time = self.model.find(user_name, min_age, max_age, resume_name, vacancy_name, min_creation_date, max_creation_date)
+        self.view.show_found(data)
+        if time:
+            self.view.show_message(f"Execution time: {time*1000}ms")

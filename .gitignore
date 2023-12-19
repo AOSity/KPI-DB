@@ -2,4 +2,7 @@
 env
 venv
 
+*.doc
+*.docx
+
 __pycache__

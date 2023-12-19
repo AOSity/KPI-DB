@@ -1,4 +1,5 @@
 import psycopg2
+import time 
 from db_setup import db_setup_script
 
 class Model:
@@ -201,8 +202,10 @@ class Model:
                 query += f' AND "Vacancy"."Creation Date" <= {max_creation_date}'
 
             c = self.conn.cursor()
+            start_time = time.time()
             c.execute(query)
-            return c.fetchall()
+            end_time = time.time()
+            return (c.fetchall(), end_time - start_time)
         except Exception:
             self.conn.rollback()
             return
