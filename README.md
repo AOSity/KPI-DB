@@ -1,5 +1,4 @@
-# DB RGR
-Creation of a database application focused on interaction with the `PostgreSQL` DBMS
+# DB Lab2, var 4
 
 ## ERD
 

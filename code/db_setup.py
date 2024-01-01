@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS public."Resume"
 (
     "ResumeID" serial NOT NULL,
     "Name" character varying(64) NOT NULL,
-    "File Link" text NOT NULL,
+    "File_Link" text NOT NULL,
     "OwnerID" serial NOT NULL,
     CONSTRAINT "ResumeID" PRIMARY KEY ("ResumeID")
 );
@@ -26,12 +26,12 @@ CREATE TABLE IF NOT EXISTS public."Vacancy"
     "VacancyID" serial NOT NULL,
     "Name" character varying(64) NOT NULL,
     "Description" character varying(4096),
-    "Creation Date" timestamp without time zone NOT NULL,
+    "Creation_Date" timestamp without time zone NOT NULL,
     "PublisherID" serial NOT NULL,
     CONSTRAINT "VacancyID" PRIMARY KEY ("VacancyID")
 );
 
-CREATE TABLE IF NOT EXISTS public."Resume / Vacancy"
+CREATE TABLE IF NOT EXISTS public."ResumeVacancy"
 (
     "ResumeID" serial NOT NULL,
     "VacancyID" serial NOT NULL,
@@ -54,7 +54,7 @@ ALTER TABLE IF EXISTS public."Vacancy"
     NOT VALID;
 
 
-ALTER TABLE IF EXISTS public."Resume / Vacancy"
+ALTER TABLE IF EXISTS public."ResumeVacancy"
     ADD CONSTRAINT "ResumeID" FOREIGN KEY ("ResumeID")
     REFERENCES public."Resume" ("ResumeID") MATCH SIMPLE
     ON UPDATE CASCADE
@@ -62,7 +62,7 @@ ALTER TABLE IF EXISTS public."Resume / Vacancy"
     NOT VALID;
 
 
-ALTER TABLE IF EXISTS public."Resume / Vacancy"
+ALTER TABLE IF EXISTS public."ResumeVacancy"
     ADD CONSTRAINT "VacancyID" FOREIGN KEY ("VacancyID")
     REFERENCES public."Vacancy" ("VacancyID") MATCH SIMPLE 
     ON UPDATE CASCADE

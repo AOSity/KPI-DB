@@ -1,6 +1,7 @@
 # Virtual environment folders
 env
 venv
+.vs
 
 *.doc
 *.docx

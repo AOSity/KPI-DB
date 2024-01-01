@@ -18,10 +18,6 @@ class Controller:
             elif choice == '4':
                 self.delete()
             elif choice == '5':
-                self.generate()
-            elif choice == '6':
-                self.find()
-            elif choice == '7':
                 break
 
     def show_menu(self):
@@ -30,9 +26,7 @@ class Controller:
         self.view.show_message("2. View")
         self.view.show_message("3. Update")
         self.view.show_message("4. Delete")
-        self.view.show_message("5. Generate")
-        self.view.show_message("6. Find")
-        self.view.show_message("7. Quit")
+        self.view.show_message("5. Quit")
         return input("Enter your choice: ")
 
     def add(self):
@@ -74,7 +68,7 @@ class Controller:
             data = self.model.get_table("Vacancy")
             self.view.show_vacancy(data)
         elif choice == '4':
-            data = self.model.get_table("Resume / Vacancy")
+            data = self.model.get_table("ResumeVacancy")
             self.view.show_resvac(data)
         elif choice == '5':
             return
@@ -127,38 +121,3 @@ class Controller:
             return
         return
     
-    def generate(self):
-        self.view.show_message("1. User")
-        self.view.show_message("2. Resume")
-        self.view.show_message("3. Vacancy")
-        self.view.show_message("4. Resume / Vacancy")
-        self.view.show_message("5. Cancel")
-        choice = input("Enter your choice: ")
-        if choice == '1':
-            number = input("Generated rows number: ")
-            self.view.show_message(self.model.generate_user(number))
-        elif choice == '2':
-            number = input("Generated rows number: ")
-            self.view.show_message(self.model.generate_resume(number))
-        elif choice == '3':
-            number = input("Generated rows number: ")
-            self.view.show_message(self.model.generate_vacancy(number))
-        elif choice == '4':
-            number = input("Generated rows number: ")
-            self.view.show_message(self.model.generate_resvac(number))
-        elif choice == '5':
-            return
-        return
-
-    def find(self):
-        user_name = self.view.find_input("Enter user name (blank for any): ")
-        min_age = self.view.find_input("Enter minimum age (blank for any): ")
-        max_age = self.view.find_input("Enter maximum age (blank for any): ")
-        resume_name = self.view.find_input("Enter resume name (blank for any): ")
-        vacancy_name = self.view.find_input("Enter vacancy name (blank for any): ")
-        min_creation_date = self.view.find_input("Enter minimum creation date (YYYY-MM-DD, blank for any): ")
-        max_creation_date = self.view.find_input("Enter maximum creation date (YYYY-MM-DD, blank for any): ")
-        data, time = self.model.find(user_name, min_age, max_age, resume_name, vacancy_name, min_creation_date, max_creation_date)
-        self.view.show_found(data)
-        if time:
-            self.view.show_message(f"Execution time: {time*1000}ms")
